@@ -2,28 +2,19 @@
 
 Relay is a human-centered operations work queue built for the Newtonite Software Engineering Challenge. It focuses on the moments where ordinary task CRUD becomes unsafe: competing ownership claims, stale edits, approval boundaries, duplicate retries, and the need to explain past decisions.
 
-## Project documentation
+## Features
 
-- [Architecture](ARCHITECTURE.md)
-- [Engineering decisions and trade-offs](ENGINEERING_DECISIONS.md)
-- [Known limitations](KNOWN_LIMITATIONS.md)
-- [GitHub publishing checklist](GITHUB_PUBLISHING.md)
+- Team-scoped queue with search, state filters, priority ordering, and bounded pagination.
+- Server-side role and resource checks.
+- Version-based stale-write rejection.
+- Conditional ownership claims and idempotency keys for retry safety.
+- Explicit workflow transitions and independent approval before resolving flagged work.
+- Activity history for key decisions.
+- Responsive browser UI and demo role switcher.
 
-## Core design ideas
+## Run locally
 
-- Reject stale writes instead of silently overwriting another person's work.
-- Claim ownership using a conditional update and support safe retries.
-- Enforce roles and team/resource access on the server, not only in the UI.
-- Treat approval as a workflow rule rather than a visual label.
-- Keep a history of key operational decisions.
-
-## Important status
-
-This repository currently contains the project documentation and setup notes. The application source and automated tests still need to be added before this repository is a complete runnable submission. The demo design uses FastAPI, SQLite for local evaluation, a static HTML/CSS/JavaScript interface, and pytest.
-
-## Intended local workflow
-
-Once the application source is present, the expected setup is:
+Requires Python 3.10+.
 
 ```bash
 python -m venv .venv
@@ -34,8 +25,38 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-Then open <http://127.0.0.1:8000>. Tests are intended to run with `pytest -q`.
+Open <http://127.0.0.1:8000>. API docs are at <http://127.0.0.1:8000/docs>. The app seeds fictional example requests on first run. Set `RELAY_DB_PATH` to choose another database file.
 
-## Security note
+## Run tests
 
-The planned demo identity scheme uses fixed example tokens and is not production authentication. Do not deploy with real customer, payment, employee, or credential data. Review the implementation, run the tests, and make sure you can explain the design decisions before submitting.
+```bash
+pytest -q
+```
+
+The tests cover stale edits, viewer restrictions, and approval gates.
+
+## Demo identities
+
+Select a profile in the top-right menu. For direct API calls, use `Authorization: Bearer tok-manager` or another token below.
+
+| Token | Role | Team |
+|---|---|---|
+| `tok-analyst` | Analyst | Payments |
+| `tok-operator` | Operator | Operations |
+| `tok-manager` | Manager | Management |
+| `tok-viewer` | Viewer | Operations |
+
+These fixed tokens are for local demonstration only, not production authentication.
+
+## Documentation
+
+- [Architecture](ARCHITECTURE.md)
+- [Engineering decisions and trade-offs](ENGINEERING_DECISIONS.md)
+- [Known limitations](KNOWN_LIMITATIONS.md)
+- [Publishing checklist](GITHUB_PUBLISHING.md)
+
+## Important limitations
+
+This is an assessment prototype, not a production-ready operations platform. SQLite is used for local evaluation and has not been load-tested for thousands of concurrent users. The demo identity scheme is not secure authentication, audit history is not tamper-proof, and the application has no real-time notifications or production observability. See [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md).
+
+Before submitting, run the app and tests yourself, review the authorization and concurrency behaviour, and make sure you can explain the design choices. Do not enter real customer, payment, employee, or credential data.
