@@ -55,8 +55,6 @@ These fixed tokens are for local demonstration only, not production authenticati
 - [Known limitations](KNOWN_LIMITATIONS.md)
 - [Publishing checklist](GITHUB_PUBLISHING.md)
 
-## Important limitations
 
-This is an assessment prototype, not a production-ready operations platform. SQLite is used for local evaluation and has not been load-tested for thousands of concurrent users. The demo identity scheme is not secure authentication, audit history is not tamper-proof, and the application has no real-time notifications or production observability. See [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md).
 
 Before submitting, run the app and tests yourself, review the authorization and concurrency behaviour, and make sure you can explain the design choices. Do not enter real customer, payment, employee, or credential data.
